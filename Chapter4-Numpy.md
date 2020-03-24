@@ -107,4 +107,51 @@
 >> xs, ys = np.meshgrid(points, points) # 生成两个二维网格
 >> z = np.sqrt(xs ** 2, ys ** 2) # 计算函数表达式
 ```
+#### 我们利用matplotlib（后文将细述）创建该二维数组的可视化效果：
+```python
+>> import matplotlib.pyplot as plt
+>>
+>> plt.imshow(z, cmap=plt.cm.gray)
+>> plt.colorbar()
+# 显示输出：<matplotlib.colorbar.Colorbar at 0x7f715e3fa630>
+>> plt.title("Image plot of $\sqrt{x^2 + y^2}$ for a grid of values")
+# 显示输出：<matplotlib.text.Text at 0x7f715d2de748>
+```
+#### 在这里，我使用matplotlib函数imshow从二维数组的函数值创建图像绘图。
+![avatar](/img/3.png)
+### 将条件逻辑表示为数组操作
+#### np.where函数是一个接受三个参数的函数，他可以将循环逻辑简化为数组操作，我们以例子说明，假定我们有一个布尔数组和两个数值数组：
+```python
+>> xarr = np.array([1.1, 1.2, 1.3, 1.4, 1.5])
+>> yarr = np.array([2.1, 2.2, 2.3, 2.4, 2.5])
+>> cond = np.array([True, False, True, True, False])
+```
+#### 假定我们现在希望当cond为True时，就取xarr中相应的元素，否则取yarr中相应的元素。执行此项功能的理解类似于：
+```python
+>> result = [(x if c else y) for x, y, c in zip(xarr, yarr, cond)]
+>> print(result)
+# 输出：[1.1000000000000001, 2.2000000000000002, 1.3, 1.3999999999999999, 2.5]
+```
+#### 这存在多个问题。首先，对于大型数组来说，它不是很快（因为所有工作都在解释型Python代码中完成）。其次，它不适用于多维数组，而有了np.where，你可以非常简洁的完成该功能：
+```python
+>> result = np.where(cond, xarr, yarr)
+>> print(result)
+# 输出：array([ 1.1, 2.2, 1.3, 1.4, 2.5])
+```
+#### np.where的第二个和第三个参数不需要数组，其中一个或两个可以是数值标量。在数据分析中一个典型的用处是基于另一个数组生成新的值数组。假设你有一个随机生成的数据的矩阵，并且希望将所有的正值替换为2，所有的负值替换为-2。用np.where将非常容易完成这件事：
+```python
+>> arr = np.random.randn(4, 4)
+>> arr > 0
+# 打印将输出一个布尔矩阵
+>> np.where(arr > 0, 2, -2)
+# 打印将输出一个数组，由2和-2构成，在原数组大于0的位置是2，小于0的位置是-2
+```
+#### 使用np.where时，可以结合标量和数组。例如，我可以将arr中的所有正值替换为常量2，如下所示：
+```python
+>> np.where(arr > 0, 2, arr)
+# 打印将输出一个矩阵，在原矩阵大于0的地方都变为2
+```
+#### 传递给np.where的数组可以不仅仅是大小相等的数组或标量。
+### 数学和统计方法：
+
 
