@@ -265,3 +265,31 @@
 |setdiff1d(x, y)|x - y，元素在x但不在y中|
 |setxor1d(x, y)| 设置对称差集，即元素在两个中的任意一个但不在全部中|
 
+
+### 4.4 数组的文件输入与输出
+#### NumPy能够以文本或二进制格式保存和加载数据到磁盘。在本节中，我只讨论Numpy的内置二进制格式，因为绝大多数用户会更喜欢Pandas和其他工具来加载文本或表格数据（有关详细信息，请参阅第6章）。
+#### np.save和np.load是两个主力工作函数，用来高效的保存和加载磁盘上的数组数据。默认情况下，数组以未压缩的原始二进制格式保存，文件扩展名为'.npy'。
+```python
+>> arr = np.arange(10)
+>> np.save('some_array', arr)
+```
+#### 如果文件路径尚未以.npy结尾，则将附加扩展名。然后，磁盘上的数组可以用np.load加载：
+```python
+>> np.load('some_array')
+```
+#### 使用np.savez将多个数组保存在未压缩的文档中，并将数组作为关键字参数传递：
+```python
+>> np.savez('array_archive.npz', a=arr, b=arr)
+```
+#### 当加载一个.npz文件时，你可以返回一个类似dict的对象，该对象会延迟加载各个数组：
+```python
+>> arch = np.load('array_archive.npz')
+>> arch['b']
+# 打印输出：array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+```
+#### 如果数据压缩良好，你可能希望使用numpy.savez_compressed来代替：
+```python
+>> np.savez_compressed('arrays_compressed.npz', a=arr, b=arr)
+```
+### 4.5 线性代数
+####
